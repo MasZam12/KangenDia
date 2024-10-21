@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosis</title>
+</head>
+<body>
+    <h1>Form Diagnosis Penyakit Jantung</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}  <!-- Ini sudah mencakup csrf_token -->
+        
+        <p>{{ form.G01.label }}: {{ form.G01() }}</p>
+        <p>{{ form.G02.label }}: {{ form.G02() }}</p>
+        <p>{{ form.G03.label }}: {{ form.G03() }}</p>
+        <p>{{ form.G04.label }}: {{ form.G04() }}</p>
+        <p>{{ form.G05.label }}: {{ form.G05() }}</p>
+        <p>{{ form.G06.label }}: {{ form.G06() }}</p>
+        <p>{{ form.G09.label }}: {{ form.G09() }}</p>
+        <p>{{ form.G10.label }}: {{ form.G10() }}</p>
+        <p>{{ form.G11.label }}: {{ form.G11() }}</p>
+        <p>{{ form.G12.label }}: {{ form.G12() }}</p>
+        <p>{{ form.G13.label }}: {{ form.G13() }}</p>
+        <p>{{ form.G14.label }}: {{ form.G14() }}</p>
+        <p>{{ form.G17.label }}: {{ form.G17() }}</p>
+        <p>{{ form.G18.label }}: {{ form.G18() }}</p>
+        <p>{{ form.G20.label }}: {{ form.G20() }}</p>
+        <p>{{ form.G22.label }}: {{ form.G22() }}</p>
+        <p>{{ form.G23.label }}: {{ form.G23() }}</p>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if diagnosis_results %}
+    <h2>Hasil Diagnosis</h2>
+    <ul>
+        {% for disease, percentage in diagnosis_results %}
+        <li>{{ disease }}: {{ percentage }}%</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>
