@@ -5,10 +5,16 @@ app = Flask(__name__)
 
 # Fungsi untuk menghitung Certainty Factor (CF)
 def calculate_cf(user_cf, expert_cf):
+    """Menghitung CF berdasarkan input user dan pakar."""
     return user_cf * expert_cf
 
 def combine_cf(cf_old, cf_new):
+    """Menggabungkan dua nilai CF."""
     return cf_old + cf_new * (1 - cf_old)
+
+# Fungsi untuk mendapatkan nilai CF dari input user
+def get_user_cf(choice):
+    return {1: 0.0, 2: 0.2, 3: 0.4, 4: 0.6, 5: 0.8, 6: 1.0}.get(choice, 0.0)
 
 # Fungsi untuk membaca knowledge base dari file
 def load_knowledge_base_from_file(file_path):
@@ -44,30 +50,38 @@ def diagnose(gejala_user, knowledge_base):
     hasil_diagnosis.sort(key=lambda x: x[1], reverse=True)
     return hasil_diagnosis
 
-# Halaman awal untuk tampilan pertama
+# Fungsi untuk memproses input user dari form
+def process_user_input(form_data):
+    gejala_user = {}
+    for symptom_code in form_data:
+        user_input = int(form_data[symptom_code])
+        gejala_user[symptom_code] = get_user_cf(user_input)
+    return gejala_user
+
 @app.route('/')
 def first_page():
     return render_template('tampilan.html')
 
-# Halaman Utama untuk Form Gejala
 @app.route('/diagnosa/')
 def index():
-    knowledge_base = load_knowledge_base_from_file('knowledge_base.txt')
-    symptoms = {gejala_code: data['name'] for gejala_code, data in next(iter(knowledge_base.values()))['symptoms'].items()}
+    # Muat knowledge base dan kumpulkan semua gejala unik
+    knowledge_base = load_knowledge_base_from_file("knowledge_base.txt")
+    symptoms = {}
+    for penyakit_data in knowledge_base.values():
+        for gejala_code, gejala_data in penyakit_data['symptoms'].items():
+            if gejala_code not in symptoms:
+                symptoms[gejala_code] = gejala_data['name']
     return render_template('index.html', symptoms=symptoms)
 
-# Proses diagnosa
 @app.route('/diagnose', methods=['POST'])
 def diagnose_route():
-    knowledge_base = load_knowledge_base_from_file('knowledge_base.txt')
-    gejala_user = {}
-
-    for symptom_code in request.form:
-        user_input = int(request.form[symptom_code])
-        gejala_user[symptom_code] = {1: 0.0, 2: 0.2, 3: 0.4, 4: 0.6, 5: 0.8, 6: 1.0}.get(user_input, 0.0)
+    knowledge_base = load_knowledge_base_from_file("knowledge_base.txt")
+    gejala_user = process_user_input(request.form)
 
     hasil_diagnosis = diagnose(gejala_user, knowledge_base)
-    return render_template('result.html', diagnosis_results=hasil_diagnosis)
+    hasil_diagnosis_filtered = [diagnosis for diagnosis in hasil_diagnosis if diagnosis[1] > 0]
+
+    return render_template('result.html', diagnosis_results=hasil_diagnosis_filtered)
 
 if __name__ == '__main__':
     app.run(debug=True)

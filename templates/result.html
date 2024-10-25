@@ -1,87 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasil Diagnosis Penyakit Jantung</title>
-
-    <!-- Load fonts and TailwindCSS -->
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
-        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <title>Hasil Diagnosa</title>
 </head>
-
 <body>
-    <div class="relative flex size-full min-h-screen flex-col bg-[#FFFFFF] group/design-root overflow-x-hidden"
-        style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
-        <div class="layout-container flex h-full grow flex-col">
-            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#F4EFE6] px-10 py-3">
-                <div class="flex items-center gap-4 text-[#1C160C]">
-                    <div class="size-4">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#clip0_6_535)">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z"
-                                    fill="currentColor"></path>
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_6_535">
-                                    <rect width="48" height="48" fill="white"></rect>
-                                </clipPath>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h2 class="text-[#1C160C] text-lg font-bold leading-tight tracking-[-0.015em]">Klinik Sehat</h2>
-                </div>
-                <div class="flex flex-1 justify-end gap-8">
-                    <div class="flex items-center gap-9">
-                        <a class="text-[#1C160C] text-sm font-medium leading-normal" href="#">Beranda</a>
-                        <a class="text-[#1C160C] text-sm font-medium leading-normal" href="#">Tentang Kami</a>
-                        <a class="text-[#1C160C] text-sm font-medium leading-normal" href="#">Layanan</a>
-                        <a class="text-[#1C160C] text-sm font-medium leading-normal" href="#">Kontak</a>
-                    </div>
-                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                        style='background-image: url("https://cdn.usegalileo.ai/stability/7c8a57ff-d399-4803-bfa0-ec3488f2dacd.png");'>
-                    </div>
-                </div>
-            </header>
-
-            <div class="px-40 flex flex-1 justify-center py-5">
-                <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-                    <div class="flex flex-wrap justify-between gap-3 p-4">
-                        <p class="text-[#1C160C] text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Hasil Diagnosis Penyakit Jantung</p>
-                    </div>
-
-                    <!-- Hasil Diagnosa -->
-                    <div class="p-4 grid grid-cols-[20%_1fr] gap-x-6">
-                        {% for disease, percentage in diagnosis_results %}
-                        <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#E9DFCE] py-5">
-                            <p class="text-[#A18249] text-sm font-normal leading-normal">{{ disease }}:</p>
-                            <p class="text-[#1C160C] text-sm font-normal leading-normal">{{ percentage * 100 | round(2) }}%</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-
-                    <div class="flex justify-stretch">
-                        <div class="flex flex-1 gap-3 flex-wrap px-4 py-3 justify-end">
-                            <a href="{{ url_for('index') }}">
-                                <button
-                                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#019863] text-[#FFFFFF] text-base font-bold leading-normal tracking-[0.015em]">
-                                    <span class="truncate">Diagnosis Ulang</span>
-                                </button>
-                            </a>
-                            <button
-                                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#F4EFE6] text-[#1C160C] text-base font-bold leading-normal tracking-[0.015em]">
-                                <span class="truncate">Unduh Hasil</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h2>Hasil Diagnosa</h2>
+    <hr>
+    {% if diagnosis_results %}
+        <p>Penyakit utama:</p>
+        <ul>
+            <li><strong>{{ diagnosis_results[0][0] }}:</strong> {{ (diagnosis_results[0][1] * 100) | round(2) }}%</li>
+        </ul>
+        {% if diagnosis_results | length > 1 %}
+            <p>Penyakit lain yang mungkin diderita:</p>
+            <ul>
+                {% for penyakit, cf in diagnosis_results[1:] %}
+                    <li><strong>{{ penyakit }}:</strong> {{ (cf * 100) | round(2) }}%</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <p>Tidak ada penyakit yang terdiagnosa.</p>
+    {% endif %}
+    <a href="{{ url_for('index') }}">Kembali ke Halaman Utama</a>
 </body>
-
 </html>

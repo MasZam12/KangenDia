@@ -43,6 +43,7 @@ G18: Bibir Membiru - 0.8
 G17: Mudah Lelah - 0.6
 G19: Bagian Bawah Kuku Membiru - 0.8
 G20: Infeksi Saluran Nafas Berulang - 0.6
+G21: Sulit menyusu pada bayi - 0.8
 
 P06 - Pembuluh Darah
 G09: Kaki Bengkak - 0.6
