@@ -1,17 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import os
+from db import create_connection
+import mysql.connector  # Pastikan Anda mengimpor mysql.connector
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Ganti dengan secret key Anda
 
 # Fungsi untuk menghitung Certainty Factor (CF)
 def calculate_cf(user_cf, expert_cf):
-    
-    # Hitung CF
     return user_cf * expert_cf
 
 def combine_cf(cf_old, cf_new):
-    
-    # Gabungkan 2 nilai CF
     return cf_old + cf_new * (1 - cf_old)
 
 # Fungsi untuk mendapatkan nilai CF dari input user
@@ -21,7 +20,6 @@ def get_user_cf(choice):
 # Fungsi untuk membaca knowledge base dari file di direktori data
 def load_knowledge_base_from_file():
     knowledge_base = {}
-    # Tentukan path absolut untuk file knowledge base dalam direktori "data"
     file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "knowledge_bases.txt"))
     
     print(f"Mencoba memuat file knowledge base dari path: {file_path}")
@@ -51,25 +49,20 @@ def load_knowledge_base_from_file():
 def diagnose(gejala_user, knowledge_base):
     hasil_diagnosis = []
     
-    # Iterasi melalui setiap penyakit dalam knowledge base
     for penyakit_code, penyakit_data in knowledge_base.items():
         cf_combine = 0.0
         match_found = False
         
-        # Iterasi melalui setiap gejala untuk penyakit
         for gejala_code, expert_cf in penyakit_data['symptoms'].items():
-            # Cek apakah gejala user cocok dengan gejala penyakit
             user_cf = gejala_user.get(gejala_code, 0.0)
             if user_cf > 0:  # Hanya jika ada CF dari user
-                match_found = True  # Menandakan ada kecocokan gejala
+                match_found = True
                 cf_current = calculate_cf(user_cf, expert_cf['weight'])
                 cf_combine = combine_cf(cf_combine, cf_current)
 
-        # Hanya tambahkan hasil jika ada gejala yang cocok
         if match_found:
             hasil_diagnosis.append((penyakit_data['name'], cf_combine))
 
-    # Mengurutkan hasil berdasarkan nilai CF tertinggi
     hasil_diagnosis.sort(key=lambda x: x[1], reverse=True)
     return hasil_diagnosis
 
@@ -87,7 +80,6 @@ def start():
 
 @app.route('/diagnosa')
 def index():
-    # Muat knowledge base dan kumpulkan semua gejala unik
     knowledge_base = load_knowledge_base_from_file()
     if not knowledge_base:
         return "Error: File knowledge base tidak ditemukan atau kosong."
@@ -101,21 +93,73 @@ def index():
 
 @app.route('/diagnose', methods=['POST'])
 def diagnose_route():
-    # Muat knowledge base
     knowledge_base = load_knowledge_base_from_file()
     if not knowledge_base:
         return "Error: Tidak dapat memuat knowledge base."
 
-    # Ambil data dari form
     gejala_user = process_user_input(request.form)
 
-    # Lakukan diagnosis berdasarkan gejala
     hasil_diagnosis = diagnose(gejala_user, knowledge_base)
-    # Filter hasil diagnosis untuk nilai CF > 0
     hasil_diagnosis_filtered = [diagnosis for diagnosis in hasil_diagnosis if diagnosis[1] > 0]
 
-    # Render halaman hasil diagnosis
     return render_template('result.html', diagnosis_results=hasil_diagnosis_filtered)
+
+# Rute untuk Sign Up
+@app.route('/signup', methods=['GET', 'POST'])
+def sign_up():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        phone = request.form['phone']
+        password = request.form['password']
+
+        # Koneksi ke database
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Menyimpan data ke database
+        try:
+            cursor.execute("INSERT INTO user (Nama_User, Email_User, No_User, Password_User) VALUES (%s, %s, %s, %s)", 
+                           (username, email, phone, password))
+            connection.commit()  # Simpan perubahan
+            flash('Sign Up Successful!', 'success')  # Pesan sukses
+            return redirect(url_for('sign_in'))  # Arahkan ke halaman Sign In
+        except mysql.connector.Error as err:
+            flash(f'Error: {err}', 'danger')  # Tampilkan error jika ada
+        finally:
+            cursor.close()  # Tutup cursor
+            connection.close()  # Tutup koneksi
+
+    return render_template('signup.html')
+
+
+# Rute untuk Sign In
+@app.route('/signin', methods=['GET', 'POST'])
+def sign_in():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # Koneksi ke database
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        # Mengambil data pengguna dari database
+        try:
+            cursor.execute("SELECT * FROM user WHERE Email_User = %s AND Password_User = %s", (email, password))
+            user = cursor.fetchone()
+            if user:
+                flash('Sign In Successful!', 'success')  # Pesan sukses
+                return redirect(url_for('index'))  # Arahkan ke halaman diagnosa
+            else:
+                flash('Invalid email or password', 'danger')  # Tampilkan error jika login gagal
+        except mysql.connector.Error as err:
+            flash(f'Error: {err}', 'danger')  # Tampilkan error jika ada
+        finally:
+            cursor.close()  # Tutup cursor
+            connection.close()  # Tutup koneksi
+
+    return render_template('signin.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
