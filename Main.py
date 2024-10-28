@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import os
-from db import create_connection
+from database.db import create_connection
 import mysql.connector
 
 app = Flask(__name__)
