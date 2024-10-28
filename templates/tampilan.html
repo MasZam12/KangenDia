@@ -1,185 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistem Pakar</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-    />
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  </head>
-  <body>
-    <div
-      class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden"
-      style="font-family: Inter, 'Noto Sans', sans-serif"
-    >
-      <div class="layout-container flex h-full grow flex-col">
-        <header
-          class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7eef4] px-10 py-3"
-        >
-          <div class="flex items-center gap-4 text-[#0d151c]">
-            <div class="size-4">
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-            </div>
-            <h2 class="text-[#0d151c] text-lg font-bold leading-tight tracking-[-0.015em]">Klinik Sehat</h2>
-          </div>
-          <div class="flex flex-1 justify-end gap-8">
-            <div class="flex items-center gap-9">
-              <a
-                class="text-[#0d151c] text-sm font-medium leading-normal"
-                href="#"
-                >Beranda</a
-              >
-              <a
-                class="text-[#0d151c] text-sm font-medium leading-normal"
-                href="#"
-                >Tentang Kami</a
-              >
-              <a
-                class="text-[#0d151c] text-sm font-medium leading-normal"
-                href="#"
-                >Layanan</a
-              >
-              <a
-                class="text-[#0d151c] text-sm font-medium leading-normal"
-                href="#"
-                >Kontak</a
-              >
-            </div>
-            <button
-              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#2094f3] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
-            >
-              <span class="truncate">Sign in</span>
-            </button>
-          </div>
-        </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosa Kesehatan Printer</title>
 
-        <div class="px-40 flex flex-1 justify-center py-5">
-          <div
-            class="layout-content-container flex flex-col max-w-[960px] flex-1"
-          >
-            <div class="@container">
-              <div class="@[480px]:p-4">
-                <div
-                  class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
-                  style="background-image: linear-gradient(
-                        rgba(0, 0, 0, 0.1) 0%,
-                        rgba(0, 0, 0, 0.4) 100%
-                      ),
-                      url('https://cdn.usegalileo.ai/sdxl10/4739f90e-f472-484d-9997-37b8c27f80b4.png');"
-                >
-                  <div class="flex flex-col gap-2 text-center">
-                    <h1
-                      class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]"
-                    >
-                      Cardiovascular Disease Detection
-                    </h1>
-                    <h2
-                      class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
-                    >
-                      Get your clinical diagnosis report in minutes
-                    </h2>
-                  </div>
-                  <a href="/diagnosa/">
-                    <button
-                      type="submit"
-                      class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#2094f3] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
-                    >
-                      <span class="truncate">Start Diagnosis</span>
-                    </button>
-                </a>
-                </div>
-              </div>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(-45deg, #a7cea9, #5ca68f, #1d7b7e, #1f5f78);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+            font-family: Poppins, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            color: white;
+            z-index: 10;
+        }
+
+        h2 {
+            color: white;
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        body {
+            margin-top: 550px;
+        }
+
+        .container-box {
+            background: rgba(248, 248, 255, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: block;
+            align-self: center;
+            margin: 10px auto;
+            padding: 5px 15px;
+            cursor: pointer;
+            border: 0px solid rgb(1, 102, 26);
+            font-family: "system-ui";
+            font-size: 20px;
+            color: rgb(255, 255, 255);
+            padding: 16px 30px;
+            transition: 805ms;
+            width: 250px;
+            box-shadow: rgb(194, 194, 194) -5px 10px 20px 5px;
+            border-radius: 10px;
+            background: rgb(2, 191, 59);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .button:hover {
+            color: rgb(255, 255, 255);
+            width: 200px;
+            background: rgb(0, 107, 2);
+            border-color: rgb(204, 0, 105);
+        }
+
+        .container-box h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .container-box .pengertian {
+            text-align: justify;
+        }   
+
+        .container-box p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .card h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #555;
+        }
+
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;              
+            flex-direction: row;         
+            justify-content: center; 
+            align-items: flex-start;     
+            gap: 20px;                   
+            width: 100%;
+            max-width: 800px;                
+            box-sizing: border-box;      
+            margin-top: 20px;
+        }
+
+        .card-type {
+            background-color: #fff;
+            padding: 5px;
+            border-radius: 10px;
+            text-align: left;
+            flex-basis: calc(25%); 
+            margin-bottom: 5px;         
+        }
+
+        .card-type:hover {
+            transform: scale(1.2);
+        }
+
+        .card-type p{
+            font-size: 12px
+        }
+
+        legend {
+            font-size: 10.5px;
+            font-weight: 600;
+        }
+
+        img {
+            width: 100%;
+            height: 30%;               
+            object-fit: cover;
+            object-position: 0% 10%;    
+        }
+
+        p {
+            text-warp: balance;
+        }
+
+        h2 {
+              margin-bottom: 20px;
+        }
+
+        fieldset {
+            border: 4px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+            height: 300px;
+            width: 140px;
+        }
+      
+
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h2>Sistem Pakar</h2>
+    </header>
+
+    <!-- Main Content with Two Containers -->
+    <main>
+
+        <section class="container-box">
+            <h1>Diagnosa Penyakit Kardiovaskular</h1>
+            <p>Cek penyakit dengan menekan tombol ini!</p>
+            <a href="/diagnosa" class="button">Mulai Diagnosa</a>
+        </section>
+
+        <section class="container-box">
+            <div class="card">
+                <h2>Apa itu Penyakit Kardiovaskular?</h2>
+                <p class="pengertian">Penyakit kardiovaskular adalah kelompok gangguan pada jantung dan pembuluh darah yang meliputi penyakit jantung koroner, penyakit arteri perifer, dan kondisi lain yang terkait. Penyakit ini dapat menyebabkan komplikasi serius seperti serangan jantung dan stroke. Penting untuk menjaga kesehatan jantung melalui pola makan sehat, olahraga, dan pemeriksaan rutin.</p>
             </div>
-            <div class="flex flex-col gap-10 px-4 py-10 @container">
-              <h1
-                class="text-[#0d151c] tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px]"
-              >
-                How It Works
-              </h1>
-              <div
-                class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3"
-              >
-                <div class="flex flex-col gap-3 pb-3">
-                  <div
-                    class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl"
-                    style="background-image: url('https://cdn.usegalileo.ai/stability/7bcaa20a-ea04-437f-a6c0-94c4cd0d17ab.png');"
-                  ></div>
-                  <div>
-                    <p
-                      class="text-[#0d151c] text-base font-medium leading-normal"
-                    >
-                      1. Upload your ECG data
-                    </p>
-                    <p
-                      class="text-[#49779c] text-sm font-normal leading-normal"
-                    >
-                      Upload your ECG data and answer a few questions to help us
-                      understand your health history
-                    </p>
-                  </div>
+        </section>
+
+        <section class="container-box">
+            <div class="card">
+                <h2>Jenis-Jenis Penyakit Kardiovaskular</h2>
+
+                <div class="card-container">
+                    <div class="card-type">
+                        <fieldset>
+                            <legend>Jantung Koroner</legend>
+                            <img src="/static/jantungkoroner.jpg" alt="Gambar Jantung Koroner">
+                            <p>Jantung Koroner terjadi akibat penyempitan atau penyumbatan pada arteri koroner yang mengurangi aliran darah ke otot jantung.</p>
+                        </fieldset>
+                    </div>
+                
+                    <div class="card-type">
+                        <fieldset>
+                            <legend>Gagal Jantung Kongestif</legend>
+                            <img src="/static/gagaljantung.jpg" alt="Gambar Gagal Jantung">
+                            <p>Gagal Jantung Kongestif adalah kondisi kronis di mana jantung tidak dapat memompa darah dengan efektif, sehingga cairan menumpuk di paru-paru dan tubuh
+                    </div>
+                
+                    <div class="card-type">
+                        <fieldset>
+                            <legend>Katup Jantung</legend>
+                            <img src="/static/katup.jpg" alt="Gambar Katup Jantung">
+                            <p>Penyakit Katup Jantung melibatkan gangguan pada katup jantung yang menghambat aliran darah melalui jantung.</p>
+                        </fieldset>
+                    </div>
+
+                    <div class="card-type">
+                        <fieldset>
+                            <legend>Aritmia</legend>
+                            <img src="/static/aritmia.jpg" alt="Gambar Aritmia">
+                            <p>Aritmia adalah gangguan ritme jantung yang menyebabkan detak jantung tidak teratur akibat masalah pada sistem konduksi listrik jantung.</p>
+                        </fieldset>
+                    </div>
+
+                    <div class="card-type">
+                        <fieldset>
+                            <legend>Jantung Bawaan</legend>
+                            <img src="/static/jantungbawaan.png" alt="Gambar Jantung Bawaan">
+                            <p>Jantung Bawaan merupakan kelainan struktural jantung yang sudah ada sejak lahir, sering karena perkembangan yang tidak sempurna saat janin.</p>
+                        </fieldset>
+                    </div>
+
+                    <div class="card-type">
+                        <fieldset>
+                            <legend>Pembuluh Darah</legend>
+                            <img src="/static/pem.jpg" alt="Gambar Pembuluh Darah">
+                            <p>Gangguan Pembuluh Darah memengaruhi arteri dan vena, menghambat aliran darah, terutama ke ekstremitas, yang memicu berbagai gejala akibat aliran darah yang terganggu.</p>
+                        </fieldset>
+                    </div>
+
                 </div>
-                <div class="flex flex-col gap-3 pb-3">
-                  <div
-                    class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl"
-                    style="background-image: url('https://cdn.usegalileo.ai/sdxl10/72b1b1ff-d125-41fb-bc4f-3005145e84a6.png');"
-                  ></div>
-                  <div>
-                    <p
-                      class="text-[#0d151c] text-base font-medium leading-normal"
-                    >
-                      2. Our expert system performs ECG analysis
-                    </p>
-                    <p
-                      class="text-[#49779c] text-sm font-normal leading-normal"
-                    >
-                      Our expert system performs ECG analysis, reviews your
-                      health history, and generates your clinical diagnosis
-                      report
-                    </p>
-                  </div>
-                </div>
-                <div class="flex flex-col gap-3 pb-3">
-                  <div
-                    class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl"
-                    style="background-image: url('https://cdn.usegalileo.ai/stability/36ec7ede-aa72-4c02-afa0-a9a1ae0663e9.png');"
-                  ></div>
-                  <div>
-                    <p
-                      class="text-[#0d151c] text-base font-medium leading-normal"
-                    >
-                      3. Get your clinical diagnosis report
-                    </p>
-                    <p
-                      class="text-[#49779c] text-sm font-normal leading-normal"
-                    >
-                      We'll send you an email when your clinical diagnosis
-                      report is ready. Log into your account to view and
-                      download your report
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="flex justify-center pt-5"></div>
+                
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
+        </section>
+    </main>
+
+</body>
 </html>

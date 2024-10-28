@@ -5,20 +5,27 @@ app = Flask(__name__)
 
 # Fungsi untuk menghitung Certainty Factor (CF)
 def calculate_cf(user_cf, expert_cf):
-    """Menghitung CF berdasarkan input user dan pakar."""
+    
+    # Hitung CF
     return user_cf * expert_cf
 
 def combine_cf(cf_old, cf_new):
-    """Menggabungkan dua nilai CF."""
+    
+    # Gabungkan 2 nilai CF
     return cf_old + cf_new * (1 - cf_old)
 
 # Fungsi untuk mendapatkan nilai CF dari input user
 def get_user_cf(choice):
     return {1: 0.0, 2: 0.2, 3: 0.4, 4: 0.6, 5: 0.8, 6: 1.0}.get(choice, 0.0)
 
-# Fungsi untuk membaca knowledge base dari file
-def load_knowledge_base_from_file(file_path):
+# Fungsi untuk membaca knowledge base dari file di direktori data
+def load_knowledge_base_from_file():
     knowledge_base = {}
+    # Tentukan path absolut untuk file knowledge base dalam direktori "data"
+    file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "knowledge_bases.txt"))
+    
+    print(f"Mencoba memuat file knowledge base dari path: {file_path}")
+    
     try:
         with open(file_path, 'r') as file:
             penyakit_code = None
@@ -33,20 +40,36 @@ def load_knowledge_base_from_file(file_path):
                     gejala_code, rest = line.split(": ")
                     gejala_name, weight = rest.split(" - ")
                     knowledge_base[penyakit_code]['symptoms'][gejala_code] = {'name': gejala_name, 'weight': float(weight)}
+        print("Knowledge base berhasil dimuat.")
     except FileNotFoundError:
-        print(f"File {file_path} tidak ditemukan.")
+        print(f"File {file_path} tidak ditemukan. Pastikan file berada di direktori 'data' dan bernama 'knowledge_bases.txt'.")
+    except Exception as e:
+        print("Terjadi error saat membaca knowledge base:", e)
     return knowledge_base
 
 # Fungsi untuk melakukan diagnosa
 def diagnose(gejala_user, knowledge_base):
     hasil_diagnosis = []
+    
+    # Iterasi melalui setiap penyakit dalam knowledge base
     for penyakit_code, penyakit_data in knowledge_base.items():
         cf_combine = 0.0
-        for gejala, expert_cf in penyakit_data['symptoms'].items():
-            user_cf = gejala_user.get(gejala, 0.0)
-            cf_current = calculate_cf(user_cf, expert_cf['weight'])
-            cf_combine = combine_cf(cf_combine, cf_current)
-        hasil_diagnosis.append((penyakit_data['name'], cf_combine))
+        match_found = False
+        
+        # Iterasi melalui setiap gejala untuk penyakit
+        for gejala_code, expert_cf in penyakit_data['symptoms'].items():
+            # Cek apakah gejala user cocok dengan gejala penyakit
+            user_cf = gejala_user.get(gejala_code, 0.0)
+            if user_cf > 0:  # Hanya jika ada CF dari user
+                match_found = True  # Menandakan ada kecocokan gejala
+                cf_current = calculate_cf(user_cf, expert_cf['weight'])
+                cf_combine = combine_cf(cf_combine, cf_current)
+
+        # Hanya tambahkan hasil jika ada gejala yang cocok
+        if match_found:
+            hasil_diagnosis.append((penyakit_data['name'], cf_combine))
+
+    # Mengurutkan hasil berdasarkan nilai CF tertinggi
     hasil_diagnosis.sort(key=lambda x: x[1], reverse=True)
     return hasil_diagnosis
 
@@ -59,13 +82,16 @@ def process_user_input(form_data):
     return gejala_user
 
 @app.route('/')
-def first_page():
+def start():
     return render_template('tampilan.html')
 
-@app.route('/diagnosa/')
+@app.route('/diagnosa')
 def index():
     # Muat knowledge base dan kumpulkan semua gejala unik
-    knowledge_base = load_knowledge_base_from_file("knowledge_base.txt")
+    knowledge_base = load_knowledge_base_from_file()
+    if not knowledge_base:
+        return "Error: File knowledge base tidak ditemukan atau kosong."
+    
     symptoms = {}
     for penyakit_data in knowledge_base.values():
         for gejala_code, gejala_data in penyakit_data['symptoms'].items():
@@ -75,12 +101,20 @@ def index():
 
 @app.route('/diagnose', methods=['POST'])
 def diagnose_route():
-    knowledge_base = load_knowledge_base_from_file("knowledge_base.txt")
+    # Muat knowledge base
+    knowledge_base = load_knowledge_base_from_file()
+    if not knowledge_base:
+        return "Error: Tidak dapat memuat knowledge base."
+
+    # Ambil data dari form
     gejala_user = process_user_input(request.form)
 
+    # Lakukan diagnosis berdasarkan gejala
     hasil_diagnosis = diagnose(gejala_user, knowledge_base)
+    # Filter hasil diagnosis untuk nilai CF > 0
     hasil_diagnosis_filtered = [diagnosis for diagnosis in hasil_diagnosis if diagnosis[1] > 0]
 
+    # Render halaman hasil diagnosis
     return render_template('result.html', diagnosis_results=hasil_diagnosis_filtered)
 
 if __name__ == '__main__':
