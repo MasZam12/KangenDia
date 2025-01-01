@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navbar Toggle</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/start.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <a href="#" class="logo">SiPaKuLer</a>
+
+        <nav class="navbar" data-navbar>
+          <ul class="navbar-list">
+            <li><a href="#" class="navbar-link">Home</a></li>
+            <li><a href="#" class="navbar-link">About</a></li>
+            <li><a href="#" class="navbar-link">Our Team</a></li>
+          </ul>
+        </nav>
+
+        <!-- Tombol Toggle untuk Navbar -->
+        <button
+          class="nav-open-btn"
+          aria-label="toggle menu"
+          data-navbar-toggle-btn>
+          <ion-icon
+            name="menu-outline"
+            aria-hidden="true"
+            class="menu-icon"></ion-icon>
+          <ion-icon
+            name="close-outline"
+            aria-hidden="true"
+            class="close-icon"></ion-icon>
+        </button>
+
+        <!-- Overlay untuk menutup navbar di perangkat mobile -->
+        <div class="overlay" data-overlay></div>
+      </div>
+    </header>
+
+    <main>
+      <article>
+        <!-- HERO -->
+        <section class="section hero" aria-label="hero">
+          <div class="container">
+            <div class="hero-content">
+              <h1 class="h1 title hero-title">
+                Diagnosa Penyakit Kardiovaskular
+              </h1>
+
+              <p class="hero-text">
+                Periksa kesehatan jantung Anda dengan mudah dan cepat. Mulai
+                diagnosa sekarang untuk mendapatkan gambaran kondisi
+                kardiovaskular Anda secara akurat!
+              </p>
+
+              <div class="input-wrapper">
+                <a href="/diagnosa" class="btn btn-primary"
+                  >Periksa Sekarang!</a
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ----- ABOUT ----- -->
+
+        <!-- Pengertian -->
+        <section
+          class="section pengertian text-center"
+          aria-labelledby="pengertian-label">
+          <div class="container">
+            <figure class="pengertian-banner">
+              <img
+                src="{{ url_for('static', filename='image/think.png') }}"
+                width="734"
+                height="854"
+                loading="lazy"
+                alt="Ilustrasi tentang penyakit kardiovaskular" />
+            </figure>
+
+            <div class="pengertian-content">
+              <h2 class="h2 title section-title" id="pengertian-label">
+                Apa itu Penyakit Kardiovaskular?
+              </h2>
+              <p class="section-text">
+                Penyakit kardiovaskular adalah kelompok gangguan pada jantung
+                dan pembuluh darah yang meliputi penyakit jantung koroner,
+                penyakit arteri perifer, dan kondisi lain yang terkait. Penyakit
+                ini dapat menyebabkan komplikasi serius seperti serangan jantung
+                dan stroke. Penting untuk menjaga kesehatan jantung melalui pola
+                makan sehat, olahraga, dan pemeriksaan rutin.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Penyakit -->
+        <section
+          class="section penyakit text-center"
+          aria-labelledby="penyakit-label">
+          <div class="container">
+            <h2 class="h2 title section-title">
+              Jenis-Jenis Penyakit Kardiovaskular
+            </h2>
+
+            <p class="section-text">
+              Beberapa penyakit yang termasuk penyakit kardiovaskular yaitu
+              sebagai berikut
+            </p>
+
+            <ul class="grid-list">
+              <li>
+                <div class="card">
+                  <img
+                    src="{{ url_for('static', filename='image/penyakit-1.jpg') }}"
+                    alt="Card Image" />
+                  <div class="card-content">
+                    <h2>Card Heading</h2>
+                    <p>
+                      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                      Nesciunt exercitationem iste, voluptatum, quia explicabo
+                      laboriosam rem adipisci voluptates cumque, veritatis atque
+                      nostrum corrupti ipsa asperiores harum? Dicta odio aut
+                      hic.
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="card">
+                  <img
+                    src="{{ url_for('static', filename='image/penyakit-2.jpg') }}"
+                    alt="Card Image" />
+                  <div class="card-content">
+                    <h2>Card Heading</h2>
+                    <p>
+                      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                      Nesciunt exercitationem iste, voluptatum, quia explicabo
+                      laboriosam rem adipisci voluptates cumque, veritatis atque
+                      nostrum corrupti ipsa asperiores harum? Dicta odio aut
+                      hic.
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="card">
+                  <img
+                    src="{{ url_for('static', filename='image/penyakit-3.png') }}"
+                    alt="Card Image" />
+                  <div class="card-content">
+                    <h2>Card Heading</h2>
+                    <p>
+                      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                      Nesciunt exercitationem iste, voluptatum, quia explicabo
+                      laboriosam rem adipisci voluptates cumque, veritatis atque
+                      nostrum corrupti ipsa asperiores harum? Dicta odio aut
+                      hic.
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="card">
+                  <img
+                    src="{{ url_for('static', filename='image/penyakit-4.jpg') }}"
+                    alt="Card Image" />
+                  <div class="card-content">
+                    <h2>Card Heading</h2>
+                    <p>
+                      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                      Nesciunt exercitationem iste, voluptatum, quia explicabo
+                      laboriosam rem adipisci voluptates cumque, veritatis atque
+                      nostrum corrupti ipsa asperiores harum? Dicta odio aut
+                      hic.
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="card">
+                  <img
+                    src="{{ url_for('static', filename='image/penyakit-5.jpg') }}"
+                    alt="Card Image" />
+                  <div class="card-content">
+                    <h2>Card Heading</h2>
+                    <p>
+                      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                      Nesciunt exercitationem iste, voluptatum, quia explicabo
+                      laboriosam rem adipisci voluptates cumque, veritatis atque
+                      nostrum corrupti ipsa asperiores harum? Dicta odio aut
+                      hic.
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="card">
+                  <img
+                    src="{{ url_for('static', filename='image/penyakit-6.jpg') }}"
+                    alt="Card Image" />
+                  <div class="card-content">
+                    <h2>Card Heading</h2>
+                    <p>
+                      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                      Nesciunt exercitationem iste, voluptatum, quia explicabo
+                      laboriosam rem adipisci voluptates cumque, veritatis atque
+                      nostrum corrupti ipsa asperiores harum? Dicta odio aut
+                      hic.
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Team -->
+        <footer class="footer"></footer>
+      </article>
+    </main>
+
+    <!-- Script untuk Navbar Toggle -->
+    <script src="/static/js/script.js"></script>
+
+    <!-- ionicon -->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  </body>
+</html>

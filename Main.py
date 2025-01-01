@@ -1,24 +1,31 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for
 import os
-from database.db import create_connection
-import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
 
+# Fungsi untuk menghitung Certainty Factor (CF)
 def calculate_cf(user_cf, expert_cf):
+    
+    # Hitung CF
     return user_cf * expert_cf
 
 def combine_cf(cf_old, cf_new):
+    
+    # Gabungkan 2 nilai CF
     return cf_old + cf_new * (1 - cf_old)
 
+# Fungsi untuk mendapatkan nilai CF dari input user
 def get_user_cf(choice):
     return {1: 0.0, 2: 0.2, 3: 0.4, 4: 0.6, 5: 0.8, 6: 1.0}.get(choice, 0.0)
 
+# Fungsi untuk membaca knowledge base dari file di direktori data
 def load_knowledge_base_from_file():
     knowledge_base = {}
+    # Tentukan path absolut untuk file knowledge base dalam direktori "data"
     file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "knowledge_bases.txt"))
+    
     print(f"Mencoba memuat file knowledge base dari path: {file_path}")
+    
     try:
         with open(file_path, 'r') as file:
             penyakit_code = None
@@ -26,10 +33,10 @@ def load_knowledge_base_from_file():
                 line = line.strip()
                 if not line:
                     continue
-                if line.startswith("P"):
+                if line.startswith("P"):  # Baris yang memulai kode penyakit
                     penyakit_code, penyakit_name = line.split(" - ")
                     knowledge_base[penyakit_code] = {'name': penyakit_name, 'symptoms': {}}
-                elif line.startswith("G"):
+                elif line.startswith("G"):  # Baris yang memulai kode gejala
                     gejala_code, rest = line.split(": ")
                     gejala_name, weight = rest.split(" - ")
                     knowledge_base[penyakit_code]['symptoms'][gejala_code] = {'name': gejala_name, 'weight': float(weight)}
@@ -40,22 +47,33 @@ def load_knowledge_base_from_file():
         print("Terjadi error saat membaca knowledge base:", e)
     return knowledge_base
 
+# Fungsi untuk melakukan diagnosa
 def diagnose(gejala_user, knowledge_base):
     hasil_diagnosis = []
+    
+    # Iterasi melalui setiap penyakit dalam knowledge base
     for penyakit_code, penyakit_data in knowledge_base.items():
         cf_combine = 0.0
         match_found = False
+        
+        # Iterasi melalui setiap gejala untuk penyakit
         for gejala_code, expert_cf in penyakit_data['symptoms'].items():
+            # Cek apakah gejala user cocok dengan gejala penyakit
             user_cf = gejala_user.get(gejala_code, 0.0)
-            if user_cf > 0:
-                match_found = True
+            if user_cf > 0:  # Hanya jika ada CF dari user
+                match_found = True  # Menandakan ada kecocokan gejala
                 cf_current = calculate_cf(user_cf, expert_cf['weight'])
                 cf_combine = combine_cf(cf_combine, cf_current)
+
+        # Hanya tambahkan hasil jika ada gejala yang cocok
         if match_found:
             hasil_diagnosis.append((penyakit_data['name'], cf_combine))
+
+    # Mengurutkan hasil berdasarkan nilai CF tertinggi
     hasil_diagnosis.sort(key=lambda x: x[1], reverse=True)
     return hasil_diagnosis
 
+# Fungsi untuk memproses input user dari form
 def process_user_input(form_data):
     gejala_user = {}
     for symptom_code in form_data:
@@ -65,75 +83,63 @@ def process_user_input(form_data):
 
 @app.route('/')
 def start():
-    return render_template('tampilan.html')
+    return render_template('start.html')
 
-@app.route('/diagnosa')
+@app.route('/diagnosa', methods=['GET', 'POST'])
 def index():
+    # Muat knowledge base dan kumpulkan semua gejala unik
     knowledge_base = load_knowledge_base_from_file()
     if not knowledge_base:
         return "Error: File knowledge base tidak ditemukan atau kosong."
+
     symptoms = {}
     for penyakit_data in knowledge_base.values():
         for gejala_code, gejala_data in penyakit_data['symptoms'].items():
             if gejala_code not in symptoms:
                 symptoms[gejala_code] = gejala_data['name']
-    return render_template('index.html', symptoms=symptoms)
+
+    # Menyusun gejala menjadi list dan membaginya per halaman
+    symptoms_list = list(symptoms.items())  # Mengubah dictionary menjadi list
+    items_per_page = 10  # Menampilkan 10 gejala per halaman (tetapkan ini)
+    page = int(request.args.get('page', 1))  # Halaman yang aktif, default ke 1
+    start = (page - 1) * items_per_page  # Indeks mulai
+    end = start + items_per_page  # Indeks akhir
+
+    # Mengambil subset gejala untuk halaman ini
+    page_symptoms = symptoms_list[start:end]
+
+    # Total halaman berdasarkan jumlah gejala
+    total_pages = len(symptoms_list) // items_per_page + (1 if len(symptoms_list) % items_per_page > 0 else 0)
+
+    # Kirim variabel 'items_per_page' ke template
+    return render_template(
+        'index.html',
+        symptoms=page_symptoms,
+        page=page,
+        total_pages=total_pages,
+        items_per_page=items_per_page  # Jangan lupa mengirimkan ini ke template
+    )
+
+
 
 @app.route('/diagnose', methods=['POST'])
 def diagnose_route():
+    # Muat knowledge base
     knowledge_base = load_knowledge_base_from_file()
     if not knowledge_base:
         return "Error: Tidak dapat memuat knowledge base."
+    
+    # Ambil data dari form
     gejala_user = process_user_input(request.form)
+
+    # Lakukan diagnosis berdasarkan gejala
     hasil_diagnosis = diagnose(gejala_user, knowledge_base)
+
+    # Filter hasil diagnosis untuk nilai CF > 0
     hasil_diagnosis_filtered = [diagnosis for diagnosis in hasil_diagnosis if diagnosis[1] > 0]
+
+    # Render halaman hasil diagnosis
     return render_template('result.html', diagnosis_results=hasil_diagnosis_filtered)
-
-@app.route('/signup', methods=['GET', 'POST'])
-def sign_up():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        phone = request.form['phone']
-        password = request.form['password']
-
-        connection = create_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("INSERT INTO user (Nama_User, Email_User, No_User, Password_User) VALUES (%s, %s, %s, %s)", 
-                        (username, email, phone, password))
-            connection.commit()
-            flash('Sign Up Successful!', 'success')
-            return redirect(url_for('sign_in'))
-        except mysql.connector.Error as err:
-            flash(f'Error: {err}', 'danger')
-        finally:
-            cursor.close()
-            connection.close()
-    return render_template('signup.html')
-
-@app.route('/signin', methods=['GET', 'POST'])
-def sign_in():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-
-        connection = create_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT * FROM user WHERE Email_User = %s AND Password_User = %s", (email, password))
-            user = cursor.fetchone()
-            if user:
-                flash('Sign In Successful!', 'success')
-                return redirect(url_for('index'))
-            else:
-                flash('Invalid email or password', 'danger')
-        except mysql.connector.Error as err:
-            flash(f'Error: {err}', 'danger')
-        finally:
-            cursor.close()
-            connection.close()
-    return render_template('signin.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
